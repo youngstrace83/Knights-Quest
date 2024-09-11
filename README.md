@@ -1,6 +1,6 @@
 # Knights-Quest
 This fast-paced, two-dimensional game will put your reflexes to the test. It uses coordinates to create a two-dimensional playing area and Pygame Zero's Actor class to introduce the characters and collectable items in the game. An event loop program makes the game run smoothly.
-# How to ply this game
+# How to play this game
 The aim of this game is to navigate the knight arund the dugeon--a two-dimensional playing area--with the arrow keys, but you cannot move through the walls or the locked door. Collect the keys by moving over them. However, you need to avoid the guards as they try to move toward the knight. Any contact with the guards ends the game. You win if you can get to the door after picking up all of the keys.
 # Dungeon crawl
 This project is an example of a style of game called dungeon crawl. In such games, the player usually navigates a labyrinthine enviornment, collecting items and battling or avoiding enemies. This game will use classic top-down 2D view, where the player appears to be looking down at the play area from above.
