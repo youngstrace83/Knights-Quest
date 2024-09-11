@@ -26,6 +26,9 @@ MAP = ["WWWWWWWWWWWWWWWW",
 def screen_coords(x, y):
     return (x * GRID_SIZE, y * GRID_SIZE)
 
+def grid_coords(actor):
+    return (round(actor.x / GRID_SIZE), round(actor.y / GRID_SIZE)) # Determines the position of an actor on the grid
+
 def setup_game():
     global player # Defines player as a global variable
     player = Actor("player", anchor=("left", "top")) # Creates a new Actor object and sets its anchor position
@@ -57,6 +60,27 @@ def draw():
     draw_background() # Draws the dungeon floor as a background onscreen
     draw_scenery() # Draws the scenery after (on top of) the background has been drawn
     draw_actors() # Drwas the actors after (on top of) the background and scenery have been drawn
+
+def on_key_down(key): # Reacts when the user presses down on a key
+    if key == keys.LEFT: 
+        move_player(-1, 0) # Player moves left by one grid square
+    elif key == keys.UP:
+        move_player(0, -1) # Player moves up by one grid square
+    elif key == keys.RIGHT:
+        move_player(1, 0) # Player moves right by one grid square
+    elif key == keys.DOWN:
+        move_player(0, 1) # Player moves down by one grid Square
+
+def move_player(dx, dy)
+    (x, y) = grid_coords(player) # Gets the current grid position of player
+    x += dx # Adds the x axis distance to x
+    y += dy # Adds the y axis distance to y
+    square = MAP[y][x] # Gives the tile at this position
+    if square == "W":
+        return # Stops the execution of the move_player() function, if the player touches the wall
+    elif square == "D":
+        return # Returns immediately if it is a door
+    player.pos = screen_coords(x, y) # Updates position of player to the new coordinates
 
 setup_game()
 # Starts Pygame Zero
