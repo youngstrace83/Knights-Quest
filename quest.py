@@ -6,6 +6,7 @@ GRID_WIDTH = 16
 GRID_HEIGHT = 12
 GRID_SIZE = 50
 GUARD_MOVE_INTERVAL = 0.5
+PLAYER_MOVE_INTERVAL = 0.1
 
 # Defines the size of the game window
 WIDTH = GRID_WIDTH * GRID_SIZE
@@ -102,8 +103,8 @@ def on_key_down(key): # Reacts when the user presses down on a key
         move_player(0, 1) # Player moves down by one grid Square
 
 def move_player(dx, dy):
-    global game_over
-    if game_over, player_won: # Checks if game_over is set
+    global game_over, player_won
+    if game_over: # Checks if game_over is set
         return
     (x, y) = grid_coords(player) # Gets the current grid position of player
     x += dx # Adds the x axis distance to x
@@ -122,7 +123,7 @@ def move_player(dx, dy):
         if x == key_x and y == key_y: # Checks if the new player position matches the key position
             keys_to_collect.remove(key) # Removes this key from the list if player position matches key position
             break # Breaks out of the for loop, as each square can only contain one key
-    player.pos = screen_coords(x, y) # Updates position of player to the new coordinates
+    animate(player, pos = screen_coords(x, y), duration=PLAYER_MOVE_INTERVAL) # Updates position of player to the new coordinates
 
 def move_guard(guard):
     global game_over
@@ -138,7 +139,7 @@ def move_guard(guard):
         guard_y += 1
     elif player_y < guard_y and MAP[guard_y - 1] [guard_x] != "W":
         guard_y -= 1
-    guard.pos = screen_coords(guard_x, guard_y) # Updates the guard actor's posit to the screen coordinates of the (possibly updated) grid position
+    animate(guard, pos = screen_coords(guard_x, guard_y), duration=GUARD_MOVE_INTERVAL) # Updates the guard actor's posit to the screen coordinates of the (possibly updated) grid position
     if guard_x == player_x and guard_y == player_y: # Ends the game if the guard's grid posit is the same as the player's grid posit
         game_over = True
 
