@@ -5,6 +5,7 @@ import pgzrun
 GRID_WIDTH = 16
 GRID_HEIGHT = 12
 GRID_SIZE = 50
+GUARD_MOVE_INTERVAL = 0.5
 
 # Defines the size of the game window
 WIDTH = GRID_WIDTH * GRID_SIZE
@@ -30,8 +31,9 @@ def grid_coords(actor):
     return (round(actor.x / GRID_SIZE), round(actor.y / GRID_SIZE)) # Determines the position of an actor on the grid
 
 def setup_game():
-    global game_over, player, keys_to_collect, guards # Defines game_over, player, guards and keys_to_collect as a global variables
+    global game_over, player_won, player, keys_to_collect, guards # Defines game_over, player_won, player, guards and keys_to_collect as a global variables
     game_over = False # Sets the variable to False initially
+    player_won = False
     player = Actor("player", anchor=("left", "top")) # Creates a new Actor object and sets its anchor position
     keys_to_collect = [] # Sets keys_to_collect to an empty list initially
     guards = [] # Sets guards to an empty list initially
@@ -71,6 +73,10 @@ def draw_actors():
 def draw_game_over():
     screen_middle = (WIDTH / 2, HEIGHT /2) # Sets the position of the "GAME OVER" message onscreen
     screen.draw.text("GAME OVER", midbottom=screen_middle, fontsize=GRID_SIZE, color="cyan", owidth=1) # Draws text "GAME OVER" in the middle of the screen
+    if player_won:
+        screen.draw.text("You won!", midtop=screen_middle, fontsize=GRID_SIZE, color="green", owidth=1)
+    else:
+        screen.draw.text("You lost!", midtop=screen_middle, fontsize=GRID_SIZE, color="red", owidth=1)
 
 # The draw handler function is called automatically from the game loop
 def draw():
@@ -92,7 +98,7 @@ def on_key_down(key): # Reacts when the user presses down on a key
 
 def move_player(dx, dy):
     global game_over
-    if game_over: # Checks if game_over is set
+    if game_over, player_won: # Checks if game_over is set
         return
     (x, y) = grid_coords(player) # Gets the current grid position of player
     x += dx # Adds the x axis distance to x
@@ -105,14 +111,36 @@ def move_player(dx, dy):
             return # Returns immediately if list is not empty
         else: # Checks if all of the keys have been picked up
             game_over = True # Sets game_over to True and continues the move
+            player_won = True # Sets it to True when the player wins the game
     for key in keys_to_collect: # Loops over each of the key actors in the list
         (key_x, key_y) = grid_coords(key) # Gets the grid position of a key actor
         if x == key_x and y == key_y: # Checks if the new player position matches the key position
             keys_to_collect.remove(key) # Removes this key from the list if player position matches key position
             break # Breaks out of the for loop, as each square can only contain one key
-
     player.pos = screen_coords(x, y) # Updates position of player to the new coordinates
 
+def move_guard(guard):
+    global game_over
+    if game_over:
+        return
+    (player_x, player_y) = grid_coords(player) # Gets the grid posit of the player actor
+    (guard_x, guard_y) = grid_coords(guard) # Gets the grid posit of this guard actor
+    if player_x > guard_x and MAP[guard_y][guard_x + 1] != "W":
+        guard_x += 1 # Increases the guard's x grid position by 1 if the above condition is true
+    elif player_x < guard_x and MAP[guard_y][guard_x - 1] != "W": # Checks if player is to the left of the guard
+        guard_x -= 1
+    elif player_y > guard_y and MAP[guard_y + 1] [guard_x] != "W":
+        guard_y += 1
+    elif player_y < guard_y and MAP[guard_y - 1] [guard_x] != "W":
+        guard_y -= 1
+    guard.pos = screen_coords(guard_x, guard_y) # Updates the guard actor's posit to the screen coordinates of the (possibly updated) grid position
+    if guard_x == player_x and guard_y == player_y: # Ends the game if the guard's grid posit is the same as the player's grid posit
+        game_over = True
+
+def move_guards():
+    for guard in guards: # Loops through each guard actor in guards list
+        move_guard(guard) # Moves all the guard actors in the list
+
 setup_game()
-# Starts Pygame Zero
-pgzrun.go()
+clock.schedule_interval(move_guards, GUARD_MOVE_INTERVAL) # Schedules regular calls to the move_guard() function
+pgzrun.go() # Starts Pygame Zero
