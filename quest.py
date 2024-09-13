@@ -77,6 +77,7 @@ def draw_game_over():
         screen.draw.text("You won!", midtop=screen_middle, fontsize=GRID_SIZE, color="green", owidth=1)
     else:
         screen.draw.text("You lost!", midtop=screen_middle, fontsize=GRID_SIZE, color="red", owidth=1)
+    screen.draw.text("Press SPACE to play again", midtop=(WIDTH /2, HEIGHT /2 + GRID_SIZE), fontsize=GRID_SIZE /2, color="cyan", owidth=1)
 
 # The draw handler function is called automatically from the game loop
 def draw():
@@ -85,6 +86,10 @@ def draw():
     draw_actors() # Drwas the actors after (on top of) the background and scenery have been drawn
     if game_over:
         draw_game_over()
+
+def on_key_up(key):
+    if key == keys.SPACE and game_over:
+        setup_game()
 
 def on_key_down(key): # Reacts when the user presses down on a key
     if key == keys.LEFT: 
