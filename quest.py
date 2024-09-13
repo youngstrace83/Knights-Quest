@@ -30,7 +30,7 @@ def grid_coords(actor):
     return (round(actor.x / GRID_SIZE), round(actor.y / GRID_SIZE)) # Determines the position of an actor on the grid
 
 def setup_game():
-    global game_over, player, keys_to_collect # Defines game_over, player and keys_to_collect as a global variables
+    global game_over, player, keys_to_collect, guards # Defines game_over, player, guards and keys_to_collect as a global variables
     game_over = False # Sets the variable to False initially
     player = Actor("player", anchor=("left", "top")) # Creates a new Actor object and sets its anchor position
     keys_to_collect = [] # Sets keys_to_collect to an empty list initially
