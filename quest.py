@@ -30,7 +30,8 @@ def grid_coords(actor):
     return (round(actor.x / GRID_SIZE), round(actor.y / GRID_SIZE)) # Determines the position of an actor on the grid
 
 def setup_game():
-    global player, keys_to_collect # Defines player and keys_to_collect as a global variables
+    global game_over, player, keys_to_collect # Defines game_over, player and keys_to_collect as a global variables
+    game_over = False # Sets the variable to False initially
     player = Actor("player", anchor=("left", "top")) # Creates a new Actor object and sets its anchor position
     keys_to_collect = [] # Sets keys_to_collect to an empty list initially
     for y in range(GRID_HEIGHT): # Loops over each grid position
@@ -78,6 +79,9 @@ def on_key_down(key): # Reacts when the user presses down on a key
         move_player(0, 1) # Player moves down by one grid Square
 
 def move_player(dx, dy):
+    global game_over
+    if game_over: # Checks if game_over is set
+        return
     (x, y) = grid_coords(player) # Gets the current grid position of player
     x += dx # Adds the x axis distance to x
     y += dy # Adds the y axis distance to y
@@ -87,6 +91,8 @@ def move_player(dx, dy):
     elif square == "D":
         if len(keys_to_collect) > 0:
             return # Returns immediately if list is not empty
+        else: # Checks if all of the keys have been picked up
+            game_over = True # Sets game_over to True and continues the move
     for key in keys_to_collect: # Loops over each of the key actors in the list
         (key_x, key_y) = grid_coords(key) # Gets the grid position of a key actor
         if x == key_x and y == key_y: # Checks if the new player position matches the key position
