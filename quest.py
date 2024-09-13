@@ -34,6 +34,7 @@ def setup_game():
     game_over = False # Sets the variable to False initially
     player = Actor("player", anchor=("left", "top")) # Creates a new Actor object and sets its anchor position
     keys_to_collect = [] # Sets keys_to_collect to an empty list initially
+    guards = [] # Sets guards to an empty list initially
     for y in range(GRID_HEIGHT): # Loops over each grid position
         for x in range(GRID_WIDTH): 
             square = MAP[y][x] # Extracts the character from the map representing this grid position
@@ -42,6 +43,9 @@ def setup_game():
             elif square == "K": # Creates a key if the square is K
                 key = Actor("key", anchor=("left", "top"), pos=screen_coords(x, y)) # Creates the key actor with an image, anchor, and position
                 keys_to_collect.append(key) # Adds this actor to the list of keys created above
+            elif square == "G":
+                guard = Actor("guard", anchor=("left", "top"), pos=screen_coords(x, y))
+                guards.append(guard)
 
 def draw_background():
     for y in range(GRID_HEIGHT): # Loops over each grid row
@@ -61,12 +65,20 @@ def draw_actors():
     player.draw() # Drows the player actor onscreen at it's current position
     for key in keys_to_collect: # Draws all the actors in the list keys_to_collect
         key.draw()
+    for guard in guards:
+        guard.draw() # Draws all the actors in the list guards
+
+def draw_game_over():
+    screen_middle = (WIDTH / 2, HEIGHT /2) # Sets the position of the "GAME OVER" message onscreen
+    screen.draw.text("GAME OVER", midbottom=screen_middle, fontsize=GRID_SIZE, color="cyan", owidth=1) # Draws text "GAME OVER" in the middle of the screen
 
 # The draw handler function is called automatically from the game loop
 def draw():
     draw_background() # Draws the dungeon floor as a background onscreen
     draw_scenery() # Draws the scenery after (on top of) the background has been drawn
     draw_actors() # Drwas the actors after (on top of) the background and scenery have been drawn
+    if game_over:
+        draw_game_over
 
 def on_key_down(key): # Reacts when the user presses down on a key
     if key == keys.LEFT: 
