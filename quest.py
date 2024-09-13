@@ -78,7 +78,7 @@ def draw():
     draw_scenery() # Draws the scenery after (on top of) the background has been drawn
     draw_actors() # Drwas the actors after (on top of) the background and scenery have been drawn
     if game_over:
-        draw_game_over
+        draw_game_over()
 
 def on_key_down(key): # Reacts when the user presses down on a key
     if key == keys.LEFT: 
