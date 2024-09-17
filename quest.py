@@ -3,29 +3,33 @@ import pgzrun
 import random
 
 # Defines the width and height of the game grid and the size of each tile
-GRID_WIDTH = 16
-GRID_HEIGHT = 12
+GRID_WIDTH = 20
+GRID_HEIGHT = 15
 GRID_SIZE = 50
 GUARD_MOVE_INTERVAL = 0.5
 PLAYER_MOVE_INTERVAL = 0.1
 BACKGROUND_SEED = 123456
+PLAYER_MOVE_INTERVAL = 0.25
 
 # Defines the size of the game window
 WIDTH = GRID_WIDTH * GRID_SIZE
 HEIGHT = GRID_HEIGHT * GRID_SIZE
 # Define's the scenery where W = Wall, K = Key, G = Guard, P = Player and D = Door
-MAP = ["WWWWWWWWWWWWWWWW",
-       "W              W",
-       "W              W",
-       "W  W  KG       W",
-       "W  WWWWWWWWWW  W",
-       "W              W",
-       "W      P       W",
-       "W  WWWWWWWWWW  W",
-       "W      GK   W  W",
-       "W              W",
-       "W              D",
-       "WWWWWWWWWWWWWWWW"]
+MAP = ["WWWWWWWWWWWWWWWWWWWW",
+       "W        W         W",
+       "W        W         W",
+       "W   W        W     D",
+       "W   W G K    W     W",
+       "W   WWWWWWWWWWWW   W",
+       "W                  W",
+       "W                  W",
+       "W   WWWWW  WWWWW   W",
+       "W   W      W  KW   W",
+       "W   W P    WG  W   W",
+       "W   WWWWWWWW   W   W",
+       "W     G            W",
+       "W     K            W",
+       "WWWWWWWWWWWWWWWWWWWW"]
 # This function converts a grid position to screen coordinates 
 def screen_coords(x, y):
     return (x * GRID_SIZE, y * GRID_SIZE)
@@ -72,7 +76,7 @@ def draw_scenery():
             square = MAP[y][x] # Extracts the character from the map represented by this grid position
             if square == "W": # Draws a wall tile at the screen position represented by W
                 screen.blit("wall", screen_coords(x, y))
-            elif square == "D": # Drwas the door tile at position D
+            elif square == "D" and len(keys_to_collect) > 0: # Drwas the door tile at position D
                 screen.blit("door", screen_coords(x, y))
 
 def draw_actors():
@@ -134,7 +138,17 @@ def move_player(dx, dy):
         if x == key_x and y == key_y: # Checks if the new player position matches the key position
             keys_to_collect.remove(key) # Removes this key from the list if player position matches key position
             break # Breaks out of the for loop, as each square can only contain one key
-    animate(player, pos = screen_coords(x, y), duration=PLAYER_MOVE_INTERVAL) # Updates position of player to the new coordinates
+    animate(player, pos = screen_coords(x, y), duration=PLAYER_MOVE_INTERVAL, on_finished=repeat_player_move) # Updates position of player to the new coordinates
+
+def repeat_player_move():
+    if keyboard.left:
+        move_player(-1, 0)
+    elif keyboard.up:
+        move_player(0, -1)
+    elif keyboard.right:
+        move_player(1, 0)
+    elif keyboard.down:
+        move_player(0, 1)
 
 def move_guard(guard):
     global game_over
