@@ -1,5 +1,6 @@
 # Imports the Pygame Zero functionality
 import pgzrun
+import random
 
 # Defines the width and height of the game grid and the size of each tile
 GRID_WIDTH = 16
@@ -7,6 +8,7 @@ GRID_HEIGHT = 12
 GRID_SIZE = 50
 GUARD_MOVE_INTERVAL = 0.5
 PLAYER_MOVE_INTERVAL = 0.1
+BACKGROUND_SEED = 123456
 
 # Defines the size of the game window
 WIDTH = GRID_WIDTH * GRID_SIZE
@@ -51,9 +53,18 @@ def setup_game():
                 guards.append(guard)
 
 def draw_background():
+    random.seed(BACKGROUND_SEED)
     for y in range(GRID_HEIGHT): # Loops over each grid row
         for x in range(GRID_WIDTH): # Loops over each grid column
-            screen.blit("floor1", screen_coords(x, y)) # screen.blit() draws the named image at the given screen position
+            if x % 2 == y % 2:
+                screen.blit("floor1", screen_coords(x, y)) # screen.blit() draws the named image at the given screen position
+            else:
+                screen.blit("floor2", screen_coords(x, y))
+            n = random.randint(0, 99)
+            if n < 5:
+                screen.blit("crack1", screen_coords(x, y))
+            elif n < 10:
+                screen.blit("crack2", screen_coords(x, y))
 def draw_scenery():
     # Loops over each grid position
     for y in range(GRID_HEIGHT): 
