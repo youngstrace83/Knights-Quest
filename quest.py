@@ -41,7 +41,7 @@ def setup_game():
     global game_over, player_won, player, keys_to_collect, guards # Defines game_over, player_won, player, guards and keys_to_collect as a global variables
     game_over = False # Sets the variable to False initially
     player_won = False
-    player = Actor("player", anchor=("left", "top")) # Creates a new Actor object and sets its anchor position
+    player = Actor("pikachu", anchor=("left", "top")) # Creates a new Actor object and sets its anchor position
     keys_to_collect = [] # Sets keys_to_collect to an empty list initially
     guards = [] # Sets guards to an empty list initially
     for y in range(GRID_HEIGHT): # Loops over each grid position
